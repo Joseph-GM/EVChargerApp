@@ -34,7 +34,7 @@ class TMapShow: UIView, TMapViewDelegate {
 /*    var mPosition: CLLocationCoordinate2D = CLLocationCoordinate2D.init(latitude: 37.5147585, longitude:126.7044424) */
   
 //    let zoom = 16
-    let apiKey:String = "l7xxb0267913faf84de39d5c80d951a60836"
+    let apiKey:String = "SK_API"
 
   @objc var clatitude: NSNumber = 36.121212
   @objc var clongitude: NSNumber = 126.1212121
@@ -147,7 +147,7 @@ class TMapShow: UIView, TMapViewDelegate {
 
         let bounds = UIScreen.main.bounds
         let width = bounds.width
-      let height = bounds.height*0.85
+      let height = bounds.height*0.75
       
       let view = UIView(frame: CGRect(x: 0, y: 0, width: width, height: height))
         view.layer.borderWidth = 1.0
