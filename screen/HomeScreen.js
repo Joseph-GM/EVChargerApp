@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import { SafeAreaView,
     StyleSheet,
     ScrollView,
@@ -8,22 +8,80 @@ import { SafeAreaView,
     TouchableOpacity,
     requireNativeComponent, } from 'react-native'
 
+import axios from 'axios'
 import Geolocation from '@react-native-community/geolocation';
-const SK_API_KEY = 'SK_API'
+
+const SK_API_KEY = 'l7xxb0267913faf84de39d5c80d951a60836'
     
 const TMapShow = requireNativeComponent("TMapShow")
 
-export default class HomeScreen extends Component  {
-     state = {
+export default function HomeScreen() {
+  const [clat, setClatitude] = useState(37.512992);
+  const [clon, setClongitude] = useState(126.7063177);
+  const [address, setAddress] = useState({});
+  const [csData, setCSData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const firstAddress = axios.get('https://apis.openapi.sk.com/tmap/geo/reversegeocoding', {
+    params: {
+      version: 1,
+      lat: clat.toString(),
+      lon: clon.toString(),
+      appKey: SK_API_KEY,
+      format: "json",
+      callback: "result",
+    } 
+  })
+
+  const secondCSData = axios.get('https://apis.openapi.sk.com/tmap/pois', {
+    params: {
+      version: 1,
+      count: 1,
+      searchKeyword: "전기차충전소",
+      centerLat: clat.toString(),
+      centerLon: clon.toString(),
+      appKey: SK_API_KEY,
+    } 
+  })
+
+  useEffect( () => {
+
+    Geolocation.getCurrentPosition(
+      position => {
+        setClatitude(position.coords.latitude);
+        setClongitude(position.coords.longitude);
+        axios
+        .all([firstAddress, secondCSData])
+        .then(
+          axios.spread((...response) => {
+            const first = response[0].data;
+            const second = response[1].data;
+//            console.log("ADDRESS*************************")
+//            console.log(JSON.stringify(first));
+            setAddress(first);
+            setCSData(second);
+            setIsLoading(false);
+
+//            console.log("CSInfo*************************")
+//            console.log(JSON.stringify(second));
+          })
+        )
+        .catch(erros => {
+          console.log("error")
+        })
+      });
+  }, []);
+
+  /*     state = {
         zoom: 5,
         lat : 37.55555,
         lon : 126.11111,
         breweryList: null,
         addressData : null,
         isLoading : true,
-        }; 
+        }; */
       
-      componentDidMount() {
+/*      componentDidMount() {
         Geolocation.getCurrentPosition(
           position => {
             this.setState(
@@ -48,13 +106,8 @@ export default class HomeScreen extends Component  {
             console.log('error')
           }
         )
-      }
+      } */
 
-    render(){
-    const lat = this.state.lat
-    const lon = this.state.lon
-    const isLoading = this.state.isLoading
-    const markers = this.state.breweryList
       return (
         <View style={styles.container}>
           {isLoading? <Text> Data is Loading </Text> :
@@ -62,23 +115,23 @@ export default class HomeScreen extends Component  {
             <TMapShow 
             style={ styles.wrapper }
             zoom = {10}
-            clatitude = {lat}
-            clongitude = {lon}
-            markerdata = {markers}
+            clatitude = {clat}
+            clongitude = {clon}
+            markerdata = {csData}
           />
           <TouchableOpacity
             style={[styles.border]}
             onPress={this.increment}
           >
             <Text style={styles.button}>
-              {this.state.addressData.addressInfo.fullAddress}
+              {address.addressInfo.fullAddress}
             </Text>
           </TouchableOpacity>
           </>
           }
         </View>
       );
-    }
+    
 }
 
 const styles = StyleSheet.create({
