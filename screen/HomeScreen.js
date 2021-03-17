@@ -6,16 +6,17 @@ import { SafeAreaView,
     Text,
     StatusBar,
     TouchableOpacity,
-    requireNativeComponent, } from 'react-native'
+    requireNativeComponent,
+    Button, } from 'react-native'
 
 import axios from 'axios'
 import Geolocation from '@react-native-community/geolocation';
 
-const SK_API_KEY = 'l7xxb0267913faf84de39d5c80d951a60836'
+const SK_API_KEY = 'SK_API_KEY'
     
 const TMapShow = requireNativeComponent("TMapShow")
 
-export default function HomeScreen() {
+export default function HomeScreen({navigation}) {
   const [clat, setClatitude] = useState(37.512992);
   const [clon, setClongitude] = useState(126.7063177);
   const [address, setAddress] = useState({});
@@ -121,12 +122,16 @@ export default function HomeScreen() {
           />
           <TouchableOpacity
             style={[styles.border]}
-            onPress={this.increment}
+            onPress={this.state}
           >
             <Text style={styles.button}>
               {address.addressInfo.fullAddress}
             </Text>
           </TouchableOpacity>
+          <Button 
+            title = "Go To List View"
+            onPress = {()=> navigation.navigate('List',csData) }
+          />
           </>
           }
         </View>

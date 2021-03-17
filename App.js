@@ -25,40 +25,25 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import HomeScreen from './screen/HomeScreen';
 import ListScreen from './screen/ListScreen';
-
-function HomeStack({navigation}) {
-  return (
-    <>
-      <HomeScreen />
-      <Button 
-        title = "Go to List"
-        onPress = {()=> navigation.navigate('List') }
-      />
-    </>
-  );
-}
-
-function ListStack({navigation}){
-  return(
-    <ListScreen />
-  );
-} 
+import ReviewDetails from './screen/ReviewDetails';
 
 
 const Stack = createStackNavigator();
 
  export default function App() {
-      return (
+      
+    return (
         <NavigationContainer>
           <Stack.Navigator>
             <Stack.Screen 
              name="Home" 
-             component={HomeStack}
+             component={HomeScreen}
              options={{
                title: 'Energy Assist'
              }} 
             />
-            <Stack.Screen name="List" component={ListStack} />
+            <Stack.Screen name="List" component={ListScreen} />
+            <Stack.Screen name="Details" component={ReviewDetails} />
           </Stack.Navigator>
         </NavigationContainer>    
       );
