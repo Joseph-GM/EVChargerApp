@@ -36,7 +36,7 @@ export default function HomeScreen() {
   const secondCSData = axios.get('https://apis.openapi.sk.com/tmap/pois', {
     params: {
       version: 1,
-      count: 1,
+      count: 20,
       searchKeyword: "전기차충전소",
       centerLat: clat.toString(),
       centerLon: clon.toString(),
@@ -59,7 +59,7 @@ export default function HomeScreen() {
 //            console.log("ADDRESS*************************")
 //            console.log(JSON.stringify(first));
             setAddress(first);
-            setCSData(second);
+            setCSData(second.searchPoiInfo.pois.poi);
             setIsLoading(false);
 
 //            console.log("CSInfo*************************")
