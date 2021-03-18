@@ -34,7 +34,7 @@ class TMapShow: UIView, TMapViewDelegate {
 /*    var mPosition: CLLocationCoordinate2D = CLLocationCoordinate2D.init(latitude: 37.5147585, longitude:126.7044424) */
   
 //    let zoom = 16
-    let apiKey:String = "SK_API_Key"
+    let apiKey:String = "SK_API_KEY"
 
   @objc var clatitude: NSNumber = 36.121212
   @objc var clongitude: NSNumber = 126.1212121
