@@ -26,6 +26,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from './screen/HomeScreen';
 import ListScreen from './screen/ListScreen';
 import ReviewDetails from './screen/ReviewDetails';
+import RouteView from './screen/RouteView';
 
 
 const Stack = createStackNavigator();
@@ -44,6 +45,7 @@ const Stack = createStackNavigator();
             />
             <Stack.Screen name="List" component={ListScreen} />
             <Stack.Screen name="Details" component={ReviewDetails} />
+            <Stack.Screen name="Route" component={RouteView} />
           </Stack.Navigator>
         </NavigationContainer>    
       );

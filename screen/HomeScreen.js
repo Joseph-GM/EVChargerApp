@@ -9,10 +9,11 @@ import { SafeAreaView,
     requireNativeComponent,
     Button, } from 'react-native'
 
-import axios from 'axios'
+import axios from 'axios';
 import Geolocation from '@react-native-community/geolocation';
+import MapView from './MapView';
 
-const SK_API_KEY = 'SK_API_KEY'
+const SK_API_KEY = 'SK_API_Key'
     
 const TMapShow = requireNativeComponent("TMapShow")
 
@@ -116,41 +117,7 @@ export default function HomeScreen({navigation}) {
       });
   }, []);
 
-  /*     state = {
-        zoom: 5,
-        lat : 37.55555,
-        lon : 126.11111,
-        breweryList: null,
-        addressData : null,
-        isLoading : true,
-        }; */
-      
-/*      componentDidMount() {
-        Geolocation.getCurrentPosition(
-          position => {
-            this.setState(
-              {
-                lat : position.coords.latitude,
-                lon : position.coords.longitude,
-              }
-            );
-            Promise.all([
-              fetch(`https://apis.openapi.sk.com/tmap/pois?version=1&count=10&searchKeyword=EV충전소&centerLon=${position.coords.longitude}&centerLat=${position.coords.latitude}&appKey=${SK_API_KEY}`),
-              fetch(`https://apis.openapi.sk.com/tmap/geo/reversegeocoding?version=1&lat=${position.coords.latitude}&lon=${position.coords.longitude}&appKey=${SK_API_KEY}`)
-             ])
-            .then(([res1, res2]) => Promise.all([res1.json(), res2.json()]))
-            .then(([data1, data2]) => {this.setState({
-              breweryList : data1.searchPoiInfo.pois.poi,
-              addressData : data2,
-              isLoading: false,
-            });
-          })
-          },
-          error => {
-            console.log('error')
-          }
-        )
-      } */
+  
 
       return (
         <View style={styles.container}>
@@ -173,7 +140,7 @@ export default function HomeScreen({navigation}) {
           </TouchableOpacity>
           <Button 
             title = "Go To List View"
-            onPress = {()=> navigation.navigate('List',csData) }
+            onPress = {()=> navigation.navigate('List',{markerInfo: csData, currentLoc: cPosition}) }
           />
           </>
           }
