@@ -1,27 +1,25 @@
 import React from 'react'
 import { View, Text, requireNativeComponent, StyleSheet} from 'react-native'
 
-//const TMapShow = requireNativeComponent("TMapShow")
+const TMapShow = requireNativeComponent("TMapShow")
 
-export default function MapView() {
+export default function MapView({getZoom, getCLat, getCLon, markers}) {
 
     return (
-        <View>
-            {/* <TMapShow
-                style={ styles.wrapper }
-                zoom = {10}
-                clatitude = {cPosition[0]}
-                clongitude = {cPosition[1]}
-                markerdata = {csData}
-            /> */}
-        </View>
+            <TMapShow
+                style={styles.mapview}
+                zoom = {getZoom}
+                clatitude = {getCLat}
+                clongitude = {getCLon}
+                markerdata = {markers}
+            />
     )
 }
 
 const styles = StyleSheet.create({
-    wrapper: {
-      flex: 1, 
-      alignItems: "center", 
-      justifyContent: "center"
+    mapview: { 
+        flex: 1,
+//      alignItems: "center", 
+//      justifyContent: "center"
     }
 })

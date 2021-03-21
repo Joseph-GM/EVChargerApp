@@ -76,7 +76,6 @@ export default function ReviewDetails({route, navigation}) {
             <>
                 {console.log(detailPoi.poiDetailInfo.name)}
                 {console.log(cLocation)}
-                {console.log(detailPoi.poiDetailInfo.evChargers)}
                 {console.log(poiId)}
                 < View style={styles.header}>
                     <Text style={styles.headerText}> {detailPoi.poiDetailInfo.name}}</Text>
@@ -90,7 +89,9 @@ export default function ReviewDetails({route, navigation}) {
                 <View>
                     <Button 
                         title = "Create Route"
-                        onPress = {() => navigation.navigate('Route')}
+                        onPress = {
+                            () => navigation.navigate('Route',{cPosition: cLocation, dLatitude: detailPoi.poiDetailInfo.frontLat, dLongitude: detailPoi.poiDetailInfo.frontLon})
+                        }
                     />
                 </View>
                 <View>

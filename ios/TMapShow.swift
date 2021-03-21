@@ -36,14 +36,14 @@ class TMapShow: UIView, TMapViewDelegate {
 //    let zoom = 16
     let apiKey:String = "SK_API_KEY"
 
-  @objc var clatitude: NSNumber = 36.121212
-  @objc var clongitude: NSNumber = 126.1212121
+  @objc var clatitude: NSNumber = 37.45593
+  @objc var clongitude: NSNumber = 126.13233
   @objc var markerdata: NSArray?
   
   var mPosition: CLLocationCoordinate2D {
     get {
-      return CLLocationCoordinate2DMake(Double(self.clatitude), Double(self.clongitude))
-    }
+      return CLLocationCoordinate2DMake(self.clatitude as! Double?, self.clongitude as! Double? ?? <#default value#>)
+      }
   }
 /* lazy var mPosition: CLLocationCoordinate2D = {
   return CLLocationCoordinate2DMake(Double(self.clatitude), Double(self.clongitude))
@@ -64,74 +64,57 @@ class TMapShow: UIView, TMapViewDelegate {
     }
   
     @objc func SKTMapApikeySucceed() {
-        self.mapView?.setCenter(mPosition)
-        self.mapView?.setZoom(Int(zoom))
+          self.mapView?.setCenter(mPosition)
+          self.mapView?.setZoom(Int(zoom))
         
-    
-        
-        let marker = TMapMarker(position: mPosition)
-        marker.title = "현재위치"
-        marker.subTitle = "내차위치"
-        marker.draggable = true
-        let label = UILabel(frame: CGRect(x: 0, y: 0, width: 30, height: 50))
-        label.text = "좌측"
-        marker.leftCalloutView = label
-        let label2 = UILabel(frame: CGRect(x: 0, y: 0, width: 30, height: 50))
-        label2.text = "우측"
-        marker.rightCalloutView = label2
-        
-        marker.map = self.mapView
-        self.markers.append(marker)
-        
-      
-      if let poiResult = markerdata! as? [[String : AnyObject]] {
-        for poi in poiResult {
-          print(poi["name"]!)
-          print(poi["noorLat"]!)
-          let markerLatitude:Double? = Double(poi["noorLat"] as! Substring)
-          let markerLongitude:Double? = Double(poi["noorLon"] as! Substring)
-          let markerPosition: CLLocationCoordinate2D? = CLLocationCoordinate2D(latitude: markerLatitude!, longitude: markerLongitude!)
-          let marker = TMapMarker(position: markerPosition!)
-          print(markerPosition)
+          print("In Map current position *******************************")
+          print(mPosition)
+          
+          let marker = TMapMarker(position: mPosition)
+          marker.title = "현재위치"
+          marker.subTitle = "내차위치"
+          marker.draggable = true
+          let label = UILabel(frame: CGRect(x: 0, y: 0, width: 30, height: 50))
+          label.text = "좌측"
+          marker.leftCalloutView = label
+          let label2 = UILabel(frame: CGRect(x: 0, y: 0, width: 30, height: 50))
+          label2.text = "우측"
+          marker.rightCalloutView = label2
+          
           marker.map = self.mapView
-          marker.title = String(poi["name"] as! Substring)
           self.markers.append(marker)
-          self.mapView?.fitMapBoundsWithMarkers(self.markers)
+          
+        
+        if let poiResult = markerdata as? [[String : AnyObject]] {
+          for poi in poiResult {
+            let markerLatitude:Double? = Double(poi["noorLat"] as! Substring)
+            let markerLongitude:Double? = Double(poi["noorLon"] as! Substring)
+            let markerPosition: CLLocationCoordinate2D? = CLLocationCoordinate2D(latitude: markerLatitude!, longitude: markerLongitude!)
+            let marker = TMapMarker(position: markerPosition!)
+            marker.map = self.mapView
+            marker.title = String(poi["name"] as! Substring)
+            self.markers.append(marker)
+            self.mapView?.fitMapBoundsWithMarkers(self.markers)
+          }
         }
-      }
-  
-/*
-       let pathData = TMapPathData()
-        pathData.requestFindNameAroundPOI(mPosition, categoryName:"EV충전소", radius: 100, count: 10) { (result, error)->Void in
-                    if let result = result {
-                        DispatchQueue.main.async {
-                            for poi in result {
-                                let marker = TMapMarker(position: poi.coordinate!)
-                                marker.map = self.mapView
-                                marker.title = poi.name
-                                self.markers.append(marker)
-                                self.mapView?.fitMapBoundsWithMarkers(self.markers)
-                            }
-                        }
-                    }
-        }
-*/
 
     }
     
 
   @objc func setupView() {
-        contentView.subviews.forEach { $0.removeFromSuperview() }
-        self.mapView = TMapView (frame: contentView.frame)
-        self.mapView?.setCenter(mPosition)
-        self.mapView?.setZoom(Int(zoom))
-        self.mapView?.delegate = self
-        self.mapView?.setApiKey(apiKey)
-                
-        contentView.addSubview(self.mapView!)
-        
-        self.addSubview(contentView)
-    }
+
+            contentView.subviews.forEach { $0.removeFromSuperview() }
+            self.mapView = TMapView (frame: contentView.frame)
+            self.mapView?.setCenter(mPosition)
+            self.mapView?.setZoom(Int(zoom))
+            self.mapView?.delegate = self
+            self.mapView?.setApiKey(apiKey)
+                    
+            contentView.addSubview(self.mapView!)
+            
+            self.addSubview(contentView)
+
+  }
     
     
     @objc func setupConstraints() {

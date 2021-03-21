@@ -13,28 +13,16 @@ import axios from 'axios';
 import Geolocation from '@react-native-community/geolocation';
 import MapView from './MapView';
 
-const SK_API_KEY = 'SK_API_Key'
+const SK_API_KEY = 'SK_API_KEY'
     
-const TMapShow = requireNativeComponent("TMapShow")
+// const TMapShow = requireNativeComponent("TMapShow")
 
 export default function HomeScreen({navigation}) {
-//  const [clat, setClatitude] = useState(37.512992);
-//  const [clon, setClongitude] = useState(126.7063177);
+
   const [cPosition, setCPosition] = useState([37.512992, 126.7063177])
   const [address, setAddress] = useState({});
   const [csData, setCSData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
-  /* const firstAddress = axios.get('https://apis.openapi.sk.com/tmap/geo/reversegeocoding', {
-    params: {
-      version: 1,
-      lat: cPosition[0].toString(),
-      lon: cPosition[1].toString(),
-      appKey: SK_API_KEY,
-      format: "json",
-      callback: "result",
-    } 
-  }) */
 
   const firstAddress = async(templat, templon) => {
     try {
@@ -70,7 +58,7 @@ export default function HomeScreen({navigation}) {
       params: {
       version: 1,
       count: 20,
-      searchKeyword: "전기차충전소",
+      searchKeyword: "EV충전소",
       centerLat: templat.toString(),
       centerLon: templon.toString(),
       appKey: SK_API_KEY,
@@ -123,25 +111,30 @@ export default function HomeScreen({navigation}) {
         <View style={styles.container}>
           {isLoading? <Text> Data is Loading </Text> :
           <>
-            <TMapShow 
-            style={ styles.wrapper }
-            zoom = {10}
-            clatitude = {cPosition[0]}
-            clongitude = {cPosition[1]}
-            markerdata = {csData}
-          />
-          <TouchableOpacity
-            style={[styles.border]}
-            onPress={this.state}
-          >
-            <Text style={styles.button}>
-              {address.addressInfo.fullAddress}
-            </Text>
-          </TouchableOpacity>
-          <Button 
-            title = "Go To List View"
-            onPress = {()=> navigation.navigate('List',{markerInfo: csData, currentLoc: cPosition}) }
-          />
+            <View style={ styles.wrapper }>
+              <MapView
+                getZoom = {10}
+                getCLat = {cPosition[0]}
+                getCLon = {cPosition[1]}
+                markers = {csData}
+              />
+            </View>
+            <View style={styles.border}>
+              <TouchableOpacity
+                onPress={this.state}
+              >
+                <Text style={styles.button}>
+                  {address.addressInfo.fullAddress}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <View styel={styles.buttonView}>
+              <Button 
+                style = {styles.buttonText}
+                title = "Go To List View"
+                onPress = {()=> navigation.navigate('List',{markerInfo: csData, currentLoc: cPosition}) }
+              />
+            </View> 
           </>
           }
         </View>
@@ -151,10 +144,12 @@ export default function HomeScreen({navigation}) {
 
 const styles = StyleSheet.create({
     container: {
-      flex: 1, alignItems: "stretch"
+      flex: 1,
+//      alignItems: "center",
+      justifyContent: "center"
     },
     wrapper: {
-      flex: 5, alignItems: "center", justifyContent: "center"
+      flex: 5, alignItems: "stretch",
     },
     border: {
       borderColor: "#eee", 
@@ -164,8 +159,11 @@ const styles = StyleSheet.create({
       justifyContent: "center"
   
     },
-    button: {
+    buttonText: {
       fontSize: 15, color: "black"
+    },
+    buttonView:{
+      flex:1
     }
   });
 
