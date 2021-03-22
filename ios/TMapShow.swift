@@ -31,34 +31,31 @@ class TMapShow: UIView, TMapViewDelegate {
     var mapView: TMapView?
     var marker: TMapMarker?
     var markers: [TMapMarker] = []
-/*    var mPosition: CLLocationCoordinate2D = CLLocationCoordinate2D.init(latitude: 37.5147585, longitude:126.7044424) */
-  
-//    let zoom = 16
+    var polylines : [TMapPolyline] = []
+
     let apiKey:String = "SK_API_KEY"
 
-  @objc var clatitude: NSNumber = 37.45593
-  @objc var clongitude: NSNumber = 126.13233
+  @objc var clatitude: NSNumber = 37.646556
+  @objc var clongitude: NSNumber = 126.876829
   @objc var markerdata: NSArray?
+  @objc var dlatitude : NSNumber?
+  @objc var dlongitude : NSNumber?
   
   var mPosition: CLLocationCoordinate2D {
     get {
-      return CLLocationCoordinate2DMake(self.clatitude as! Double?, self.clongitude as! Double? ?? <#default value#>)
-      }
+      return CLLocationCoordinate2DMake(Double(self.clatitude), Double(self.clongitude))
+    }
   }
-/* lazy var mPosition: CLLocationCoordinate2D = {
-  return CLLocationCoordinate2DMake(Double(self.clatitude), Double(self.clongitude))
-  }()
-*/
-  
-  
-  
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = .white
 //        setupConstraints()
         setupView()
+
     }
     
+  
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemente")
     }
@@ -67,57 +64,86 @@ class TMapShow: UIView, TMapViewDelegate {
           self.mapView?.setCenter(mPosition)
           self.mapView?.setZoom(Int(zoom))
         
-          print("In Map current position *******************************")
-          print(mPosition)
-          
-          let marker = TMapMarker(position: mPosition)
-          marker.title = "현재위치"
-          marker.subTitle = "내차위치"
-          marker.draggable = true
-          let label = UILabel(frame: CGRect(x: 0, y: 0, width: 30, height: 50))
-          label.text = "좌측"
-          marker.leftCalloutView = label
-          let label2 = UILabel(frame: CGRect(x: 0, y: 0, width: 30, height: 50))
-          label2.text = "우측"
-          marker.rightCalloutView = label2
-          
-          marker.map = self.mapView
-          self.markers.append(marker)
-          
-        
-        if let poiResult = markerdata as? [[String : AnyObject]] {
-          for poi in poiResult {
-            let markerLatitude:Double? = Double(poi["noorLat"] as! Substring)
-            let markerLongitude:Double? = Double(poi["noorLon"] as! Substring)
-            let markerPosition: CLLocationCoordinate2D? = CLLocationCoordinate2D(latitude: markerLatitude!, longitude: markerLongitude!)
-            let marker = TMapMarker(position: markerPosition!)
-            marker.map = self.mapView
-            marker.title = String(poi["name"] as! Substring)
-            self.markers.append(marker)
-            self.mapView?.fitMapBoundsWithMarkers(self.markers)
-          }
-        }
-
+//          setupView()
     }
     
+  public func mapViewDidFinishLoadingMap() {
+    print("In Map current position *******************************")
+    print(mPosition)
+    
+    let marker = TMapMarker(position: mPosition)
+    marker.title = "현재위치"
+    marker.subTitle = "내차위치"
+    marker.draggable = true
+    let label = UILabel(frame: CGRect(x: 0, y: 0, width: 30, height: 50))
+    label.text = "좌측"
+    marker.leftCalloutView = label
+    let label2 = UILabel(frame: CGRect(x: 0, y: 0, width: 30, height: 50))
+    label2.text = "우측"
+    marker.rightCalloutView = label2
+    
+    marker.map = self.mapView
+    self.markers.append(marker)
+    
+  
+  if let poiResult = markerdata as? [[String : AnyObject]] {
+    for poi in poiResult {
+      let markerLatitude:Double? = Double(poi["noorLat"] as! Substring)
+      let markerLongitude:Double? = Double(poi["noorLon"] as! Substring)
+      let markerPosition: CLLocationCoordinate2D? = CLLocationCoordinate2D(latitude: markerLatitude!, longitude: markerLongitude!)
+      let marker = TMapMarker(position: markerPosition!)
+      marker.map = self.mapView
+      marker.title = String(poi["name"] as! Substring)
+      self.markers.append(marker)
+      self.mapView?.fitMapBoundsWithMarkers(self.markers)
+    }
+  }
+  
+    if let dlat = dlatitude  {
+      if let dlon = dlongitude {
+        let dPosition: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: dlat.doubleValue, longitude: dlon.doubleValue)
+        let pathData = TMapPathData()
+        pathData.findPathData(startPoint: self.mPosition, endPoint: dPosition){(result, error) -> Void in
+          if let polyline = result{
+            DispatchQueue.main.async {
+              let marker1 = TMapMarker(position: self.mPosition)
+                      marker1.map = self.mapView
+                      marker1.title = "출발지"
+                      self.markers.append(marker1)
+
+                      let marker2 = TMapMarker(position: dPosition)
+                      marker2.map = self.mapView
+                      marker2.title = "목적지"
+                      self.markers.append(marker2)
+
+                      polyline.map = self.mapView
+                      self.polylines.append(polyline)
+                      self.mapView?.fitMapBoundsWithPolylines(self.polylines)
+            }
+          }
+          }
+        }
+          
+      }
+    
+    }
 
   @objc func setupView() {
-
-            contentView.subviews.forEach { $0.removeFromSuperview() }
-            self.mapView = TMapView (frame: contentView.frame)
-            self.mapView?.setCenter(mPosition)
-            self.mapView?.setZoom(Int(zoom))
-            self.mapView?.delegate = self
-            self.mapView?.setApiKey(apiKey)
-                    
-            contentView.addSubview(self.mapView!)
-            
-            self.addSubview(contentView)
+      contentView.subviews.forEach { $0.removeFromSuperview() }
+      self.mapView = TMapView (frame: contentView.frame)
+      self.mapView?.setCenter(mPosition)
+      self.mapView?.setZoom(Int(zoom))
+      self.mapView?.delegate = self
+      self.mapView?.setApiKey(apiKey)
+              
+      contentView.addSubview(self.mapView!)
+      
+      self.addSubview(contentView)
 
   }
+  
     
-    
-    @objc func setupConstraints() {
+  @objc func setupConstraints() {
         self.translatesAutoresizingMaskIntoConstraints = false
         contentView.translatesAutoresizingMaskIntoConstraints = false
         contentView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 10).isActive = true
@@ -130,9 +156,9 @@ class TMapShow: UIView, TMapViewDelegate {
 
         let bounds = UIScreen.main.bounds
         let width = bounds.width
-      let height = bounds.height*0.75
+        let height = bounds.height*0.75
       
-      let view = UIView(frame: CGRect(x: 0, y: 0, width: width, height: height))
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: width, height: height))
         view.layer.borderWidth = 1.0
         view.layer.borderColor = UIColor.lightGray.cgColor
       

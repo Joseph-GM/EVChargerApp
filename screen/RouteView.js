@@ -3,7 +3,7 @@ import { View, Text,} from 'react-native'
 import MapView from './MapView'
 import axios from 'axios';
 
-export default function RouteView({route}) {
+export default function RouteView({route, navigation}) {
     const currentPosition = route.params.cPosition
     const destination = [route.params.dLatitude, route.params. dLongitude]
     const SK_API_KEY = 'SK_API_KEY'
@@ -28,22 +28,20 @@ export default function RouteView({route}) {
               setIsLoading(false);
         };
         fetchData();
+
     },[]);
 
     return (
         <View>
             {isLoading? <Text>Data is Loading </Text> : 
-                <>
-                    {console.log("in RouteView Return")}
-                    {console.log(currentPosition)}
-                    <Text>Route View</Text>
                 <MapView 
                     getZoom = {10}
                     getCLat = {currentPosition[0]}
                     getCLon = {currentPosition[1]}
+                    getDLat = {parseFloat(destination[0])}
+                    getDLon = {parseFloat(destination[1])}
                     markers = {csData}
             />
-                </>
             }
         </View>
     )

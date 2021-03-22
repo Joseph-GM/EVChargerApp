@@ -74,9 +74,6 @@ export default function ReviewDetails({route, navigation}) {
         <View style={styles.main}>
             {getDetail? <Text>Data is Loading</Text> :
             <>
-                {console.log(detailPoi.poiDetailInfo.name)}
-                {console.log(cLocation)}
-                {console.log(poiId)}
                 < View style={styles.header}>
                     <Text style={styles.headerText}> {detailPoi.poiDetailInfo.name}}</Text>
                 </View>

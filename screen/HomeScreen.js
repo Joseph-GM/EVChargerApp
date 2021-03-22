@@ -41,17 +41,6 @@ export default function HomeScreen({navigation}) {
   }
   }
 
-  /* const secondCSData = axios.get('https://apis.openapi.sk.com/tmap/pois', {
-    params: {
-      version: 1,
-      count: 20,
-      searchKeyword: "전기차충전소",
-      centerLat: cPosition[0].toString(),
-      centerLon: cPosition[1].toString(),
-      appKey: SK_API_KEY,
-    } 
-  }) */
-
   const secondCSData = async(templat, templon) => {
     try{
       return axios.get('https://apis.openapi.sk.com/tmap/pois', {
@@ -77,23 +66,15 @@ export default function HomeScreen({navigation}) {
         const templat = position.coords.latitude
         const templon = position.coords.longitude
         setCPosition([templat, templon])
-        console.log('cPosition')
-        console.log(cPosition[0],cPosition[1])
-        console.log('temp')
-        console.log(templat, templon)
         axios
         .all([firstAddress(templat,templon), secondCSData(templat,templon)])
         .then(
           axios.spread((...response) => {
             const first = response[0].data;
             const second = response[1].data;
-            console.log("ADDRESS*************************")
-            console.log(JSON.stringify(first));
             setAddress(first);
             setCSData(second.searchPoiInfo.pois.poi);
             setIsLoading(false);
-            console.log("Monitor How many times!!***********")
-            console.log(isLoading)
 
 //            console.log("CSInfo*************************")
 //            console.log(JSON.stringify(second));
@@ -103,6 +84,7 @@ export default function HomeScreen({navigation}) {
           console.log("error")
         })
       });
+
   }, []);
 
   
