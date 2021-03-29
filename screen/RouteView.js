@@ -32,17 +32,24 @@ export default function RouteView({route, navigation}) {
     },[]);
 
     return (
-        <View>
-            {isLoading? <Text>Data is Loading </Text> : 
-                <MapView 
+            <View>
+                {isLoading? <Text>Data is Loading </Text> : 
+                <>
+                <View>
+                    <MapView 
                     getZoom = {10}
                     getCLat = {currentPosition[0]}
                     getCLon = {currentPosition[1]}
                     getDLat = {parseFloat(destination[0])}
                     getDLon = {parseFloat(destination[1])}
                     markers = {csData}
-            />
+                />
+                </View>
+                <View>
+                    <Text>Route Created!</Text>
+                </View>
+                </>
             }
-        </View>
-    )
+            </View>
+    );
 }

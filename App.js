@@ -22,31 +22,53 @@
 
 import { NavigationContainer, NavigationHelpersContext } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import HomeScreen from './screen/HomeScreen';
 import ListScreen from './screen/ListScreen';
 import ReviewDetails from './screen/ReviewDetails';
 import RouteView from './screen/RouteView';
+import SearchScreen from './screen/SearchScreen';
+import SearchResult from './screen/SearchResult'
 
+const Tab = createBottomTabNavigator();
+const HomeStack = createStackNavigator();
+const SearchStack = createStackNavigator();
 
-const Stack = createStackNavigator();
+function HomeStackScreen() {
+  return(
+    <HomeStack.Navigator>
+      <HomeStack.Screen 
+        name="Home" 
+        component={HomeScreen}
+        options={{
+          title: 'Energy Assist'
+        }} 
+      />
+      <HomeStack.Screen name="List" component={ListScreen} />
+      <HomeStack.Screen name="Details" component={ReviewDetails} />
+      <HomeStack.Screen name="Route" component={RouteView} />
+    </HomeStack.Navigator>
+  );
+}
+
+function SearchStackScreen() {
+  return(
+    <SearchStack.Navigator>
+      <SearchStack.Screen name="Search" component={SearchScreen} />
+      <SearchStack.Screen name="SearchResult" component={SearchResult} />
+    </SearchStack.Navigator>
+  );
+}
 
  export default function App() {
       
     return (
         <NavigationContainer>
-          <Stack.Navigator>
-            <Stack.Screen 
-             name="Home" 
-             component={HomeScreen}
-             options={{
-               title: 'Energy Assist'
-             }} 
-            />
-            <Stack.Screen name="List" component={ListScreen} />
-            <Stack.Screen name="Details" component={ReviewDetails} />
-            <Stack.Screen name="Route" component={RouteView} />
-          </Stack.Navigator>
+          <Tab.Navigator initialRouteName="Home">
+            <Tab.Screen name="Search" component={SearchStackScreen} />
+            <Tab.Screen name="Home" component={HomeStackScreen} />
+          </Tab.Navigator>
         </NavigationContainer>    
       );
  }

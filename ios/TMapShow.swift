@@ -156,7 +156,7 @@ class TMapShow: UIView, TMapViewDelegate {
 
         let bounds = UIScreen.main.bounds
         let width = bounds.width
-        let height = bounds.height*0.75
+        let height = bounds.height*0.65
       
         let view = UIView(frame: CGRect(x: 0, y: 0, width: width, height: height))
         view.layer.borderWidth = 1.0
