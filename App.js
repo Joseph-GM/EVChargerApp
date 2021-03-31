@@ -29,7 +29,8 @@ import ListScreen from './screen/ListScreen';
 import ReviewDetails from './screen/ReviewDetails';
 import RouteView from './screen/RouteView';
 import SearchScreen from './screen/SearchScreen';
-import SearchResult from './screen/SearchResult'
+import SearchResult from './screen/SearchResult';
+import SearchRoute from './screen/SearchRoute';
 
 const Tab = createBottomTabNavigator();
 const HomeStack = createStackNavigator();
@@ -57,6 +58,7 @@ function SearchStackScreen() {
     <SearchStack.Navigator>
       <SearchStack.Screen name="Search" component={SearchScreen} />
       <SearchStack.Screen name="SearchResult" component={SearchResult} />
+      <SearchStack.Screen name="SearchRoute" component={SearchRoute} />
     </SearchStack.Navigator>
   );
 }

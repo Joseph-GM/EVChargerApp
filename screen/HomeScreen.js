@@ -12,8 +12,9 @@ import { SafeAreaView,
 import axios from 'axios';
 import Geolocation from '@react-native-community/geolocation';
 import MapView from './MapView';
+import {SK_API_KEY} from '../shared/Appkey';
 
-const SK_API_KEY = 'SK_API_KEY'
+//const SK_API_KEY = 'SK_API_KEY'
     
 // const TMapShow = requireNativeComponent("TMapShow")
 

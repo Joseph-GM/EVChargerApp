@@ -2,6 +2,7 @@ import { types } from '@babel/core';
 import axios from 'axios';
 import React, {useState, useEffect} from 'react'
 import { View, Text, StyleSheet, FlatList, Button } from 'react-native'
+import {SK_API_KEY} from '../shared/Appkey';
 
 function typeSelector(typeNumber) {
     const type = typeNumber
@@ -52,7 +53,7 @@ export default function ReviewDetails({route, navigation}) {
     const poiId = route.params.poiNumber
     const cLocation = route.params.currentLoc
     const [detailPoi, setDetailPoi] = useState({});
-    const SK_API_KEY = 'SK_API_KEY'
+//    const SK_API_KEY = 'SK_API_KEY'
     const URL = 'https://apis.openapi.sk.com/tmap/pois/'
     const [getDetail, setGetDetail] = useState(true);
     

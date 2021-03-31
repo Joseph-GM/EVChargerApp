@@ -1,10 +1,11 @@
 import React, {useState, useEffect} from 'react'
-import { View, Text,} from 'react-native'
+import { View, Text } from 'react-native'
 import MapView from './MapView'
 import axios from 'axios';
 import {SK_API_KEY} from '../shared/Appkey';
 
-export default function RouteView({route, navigation}) {
+
+export default function SearchRoute({route}) {
     const currentPosition = route.params.cPosition
     const destination = [route.params.dLatitude, route.params.dLongitude]
     //const SK_API_KEY = 'SK_API_KEY'
@@ -33,7 +34,7 @@ export default function RouteView({route, navigation}) {
     },[]);
 
     return (
-            <View>
+        <View>
                 {isLoading? <Text>Data is Loading </Text> : 
                 <>
                 <View>
@@ -52,5 +53,5 @@ export default function RouteView({route, navigation}) {
                 </>
             }
             </View>
-    );
+    )
 }
