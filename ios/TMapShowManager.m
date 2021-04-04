@@ -15,4 +15,5 @@ RCT_EXPORT_VIEW_PROPERTY(clongitude, NSNumber)
 RCT_EXPORT_VIEW_PROPERTY(markerdata, NSArray)
 RCT_EXPORT_VIEW_PROPERTY(dlatitude, NSNumber)
 RCT_EXPORT_VIEW_PROPERTY(dlongitude, NSNumber)
+RCT_EXPORT_VIEW_PROPERTY(routedata, NSArray)
 @end

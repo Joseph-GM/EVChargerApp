@@ -3,7 +3,7 @@ import { View, Text, requireNativeComponent, StyleSheet} from 'react-native'
 
 const TMapShow = requireNativeComponent("TMapShow")
 
-export default function MapView({getZoom, getCLat, getCLon, getDLat, getDLon, markers}) {
+export default function MapView({getZoom, getCLat, getCLon, getDLat, getDLon, markers, pathdata}) {
 
     return (
             <TMapShow
@@ -14,6 +14,7 @@ export default function MapView({getZoom, getCLat, getCLon, getDLat, getDLon, ma
                 dlatitude = {getDLat}
                 dlongitude = {getDLon}
                 markerdata = {markers}
+                routesdata = {pathdata}
             />
     )
 }

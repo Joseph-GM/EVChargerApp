@@ -40,6 +40,7 @@ class TMapShow: UIView, TMapViewDelegate {
   @objc var markerdata: NSArray?
   @objc var dlatitude : NSNumber?
   @objc var dlongitude : NSNumber?
+  @objc var routedata: NSArray?
   
   var mPosition: CLLocationCoordinate2D {
     get {
@@ -98,8 +99,33 @@ class TMapShow: UIView, TMapViewDelegate {
       self.mapView?.fitMapBoundsWithMarkers(self.markers)
     }
   }
-  
-    if let dlat = dlatitude  {
+    if let dlat = dlatitude {
+      if let dlon = dlongitude {
+        let dPosition: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: dlat.doubleValue, longitude: dlon.doubleValue)
+        if let routes = routedata as? [[Double]] {
+          var path = Array<CLLocationCoordinate2D>()
+          for temp in routes {
+            let pathLatitude:Double = temp[1] as! Double
+            let pathLongitude:Double = temp[0] as! Double
+            path.append(CLLocationCoordinate2D(latitude:pathLatitude, longitude: pathLongitude))
+          }
+          let polyline = TMapPolyline(coordinates: path)
+          polyline.map = mapView
+        }
+        let marker1 = TMapMarker(position: self.mPosition)
+                marker1.map = self.mapView
+                marker1.title = "출발지"
+                self.markers.append(marker1)
+
+                let marker2 = TMapMarker(position: dPosition)
+                marker2.map = self.mapView
+                marker2.title = "목적지"
+                self.markers.append(marker2)
+      }
+    }
+    
+
+/*    if let dlat = dlatitude  {
       if let dlon = dlongitude {
         let dPosition: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: dlat.doubleValue, longitude: dlon.doubleValue)
         let pathData = TMapPathData()
@@ -124,7 +150,7 @@ class TMapShow: UIView, TMapViewDelegate {
           }
         }
           
-      }
+      }*/
     
     }
 
