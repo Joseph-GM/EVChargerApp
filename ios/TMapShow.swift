@@ -40,7 +40,7 @@ class TMapShow: UIView, TMapViewDelegate {
   @objc var markerdata: NSArray?
   @objc var dlatitude : NSNumber?
   @objc var dlongitude : NSNumber?
-  @objc var routedata: NSArray?
+  @objc var routesdata: NSArray?
   
   var mPosition: CLLocationCoordinate2D {
     get {
@@ -69,8 +69,6 @@ class TMapShow: UIView, TMapViewDelegate {
     }
     
   public func mapViewDidFinishLoadingMap() {
-    print("In Map current position *******************************")
-    print(mPosition)
     
     let marker = TMapMarker(position: mPosition)
     marker.title = "현재위치"
@@ -88,6 +86,8 @@ class TMapShow: UIView, TMapViewDelegate {
     
   
   if let poiResult = markerdata as? [[String : AnyObject]] {
+    print("****************** POI Results ******************")
+    print(poiResult)
     for poi in poiResult {
       let markerLatitude:Double? = Double(poi["noorLat"] as! Substring)
       let markerLongitude:Double? = Double(poi["noorLon"] as! Substring)
@@ -102,15 +102,19 @@ class TMapShow: UIView, TMapViewDelegate {
     if let dlat = dlatitude {
       if let dlon = dlongitude {
         let dPosition: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: dlat.doubleValue, longitude: dlon.doubleValue)
-        if let routes = routedata as? [[Double]] {
+        if let routes = routesdata as? [[Double]] {
+          print("Route Data")
+          print(routes)
           var path = Array<CLLocationCoordinate2D>()
           for temp in routes {
-            let pathLatitude:Double = temp[1] as! Double
-            let pathLongitude:Double = temp[0] as! Double
+            let pathLatitude:Double = temp[1]
+            let pathLongitude:Double = temp[0]
             path.append(CLLocationCoordinate2D(latitude:pathLatitude, longitude: pathLongitude))
           }
           let polyline = TMapPolyline(coordinates: path)
           polyline.map = mapView
+          self.polylines.append(polyline)
+          self.mapView?.fitMapBoundsWithPolylines(self.polylines)
         }
         let marker1 = TMapMarker(position: self.mPosition)
                 marker1.map = self.mapView
