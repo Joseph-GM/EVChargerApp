@@ -89,14 +89,41 @@ class TMapShow: UIView, TMapViewDelegate {
     print("****************** POI Results ******************")
     print(poiResult)
     for poi in poiResult {
-      let markerLatitude:Double? = Double(poi["noorLat"] as! Substring)
-      let markerLongitude:Double? = Double(poi["noorLon"] as! Substring)
-      let markerPosition: CLLocationCoordinate2D? = CLLocationCoordinate2D(latitude: markerLatitude!, longitude: markerLongitude!)
-      let marker = TMapMarker(position: markerPosition!)
-      marker.map = self.mapView
-      marker.title = String(poi["name"] as! Substring)
-      self.markers.append(marker)
-      self.mapView?.fitMapBoundsWithMarkers(self.markers)
+      
+/*      if let markerLatitude:Double = Double(poi["noorLat"] as! Substring) {
+        if let markerLongitude:Double = Double(poi["noorLon"] as! Substring) {
+          let markerPosition: CLLocationCoordinate2D? = CLLocationCoordinate2D(latitude: markerLatitude, longitude: markerLongitude)
+          let marker = TMapMarker(position: markerPosition!)
+          marker.map = self.mapView
+          marker.title = String(poi["name"] as! Substring)
+          self.markers.append(marker)
+          self.mapView?.fitMapBoundsWithMarkers(self.markers)
+        }
+      } */
+      if poi["centerLat"] != nil {
+        if poi["centerLon"] != nil {
+          let markerLatitude:Double? = Double(poi["centerLat"] as! Substring)
+          let markerLongitude:Double? = Double(poi["centerLon"] as! Substring)
+          let markerPosition: CLLocationCoordinate2D? = CLLocationCoordinate2D(latitude: markerLatitude!, longitude: markerLongitude!)
+          let marker = TMapMarker(position: markerPosition!)
+          marker.map = self.mapView
+          marker.title = String(poi["name"] as! Substring)
+          self.markers.append(marker)
+          self.mapView?.fitMapBoundsWithMarkers(self.markers)
+        }
+      } else if poi["noorLat"] != nil {
+        if poi ["noorLon"] != nil {
+          let markerLatitude:Double? = Double(poi["noorLat"] as! Substring)
+          let markerLongitude:Double? = Double(poi["noorLon"] as! Substring)
+          let markerPosition: CLLocationCoordinate2D? = CLLocationCoordinate2D(latitude: markerLatitude!, longitude: markerLongitude!)
+          let marker = TMapMarker(position: markerPosition!)
+          marker.map = self.mapView
+          marker.title = String(poi["name"] as! Substring)
+          self.markers.append(marker)
+          self.mapView?.fitMapBoundsWithMarkers(self.markers)
+        }
+      }
+  
     }
   }
     if let dlat = dlatitude {
