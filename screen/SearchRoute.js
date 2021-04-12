@@ -30,6 +30,7 @@ export default function SearchRoute({route}) {
           startY: currentPosition[0],
           endX: destination[1],
           endY: destination[0],
+          searchOption: 0,
         }
 
         await axios({
@@ -47,23 +48,30 @@ export default function SearchRoute({route}) {
         .then(response => {
           var polyline = [];
           var linescript = "";
-//          var csGetPoint = [];
+          var csGetPoint = [];
 //          csGetPoint.push([currentPosition[1],currentPosition[0]]);
-//          var count = 1.0;
-//          var totalDist = 0.0;
-          var allArr = response.data.features;
+          var count = 1.0;
+          var totalDist = 0.0;
+          const allArr = response.data.features;
           var length = allArr.length;
           
+          const distanceNumber = parseFloat(response.data.features[0].properties.totalDistance)*0.001;
+          setTotalDistanceKm(distanceNumber.toFixed(1).toString());
+          const timeNumber = parseFloat(response.data.features[0].properties.totalTime)
+          const minute = timeNumber/60.0;
+          setTotalTime(minute.toFixed(0).toString());
+          setFare(response.data.features[0].properties.totalFare)
+
           for (var i = 0; i < length ; i++) {
             if (allArr[i].geometry.type == "LineString") {
               var cordi = allArr[i].geometry.coordinates;
               polyline.push(...cordi);
-//              var totalDist = totalDist + Number(allArr[i].properties.distance)
-//              if (totalDist > count*50000.0) {
-//                pointLength = cordi.length-1;
-//                csGetPoint.push(cordi[pointLength])
-//                count = count+1;
-//              }
+              totalDist = totalDist + Number(allArr[i].properties.distance)
+                if (totalDist > count*distanceNumber*1000/2.0) {
+                  pointLength = cordi.length-1;
+                  csGetPoint.push(cordi[pointLength])
+                count = count+1;
+                }
             }
           };
           setRouteData(polyline);
@@ -75,38 +83,35 @@ export default function SearchRoute({route}) {
             var ydata = polyline[i][1];
             linescript = linescript + "_" + xdata + "," + ydata ;
           }
-//          console.log("polyline******", polyline)
-//          csGetPoint.push([destLongitude, destLatitude]); //목적지 좌표를 push(목적지 데이타 string 임)
-//          console.log("csGetPoint", csGetPoint);
 
-          getCSData(linescript);
-          var distanceNumber = parseFloat(response.data.features[0].properties.totalDistance)*0.001;
-          setTotalDistanceKm(distanceNumber.toFixed(1).toString());
-          var timeNumber = parseFloat(response.data.features[0].properties.totalTime)
-          var minute = timeNumber/60.0;
-          setTotalTime(minute.toFixed(0).toString());
-          setFare(response.data.features[0].properties.totalFare)
+          console.log("csGetPoint*************************", csGetPoint);
+
+          getCSData(linescript, csGetPoint);
+          
         })
-        .catch(errors => {console.log(errors)}) 
+        .catch(errors => {console.log(errors)})
     }
-    
-    getCSData = async(linescript) => {
-//      console.log("linescript", linescript)
+
+    const getCSData = async(linescript, csGetPoint) => {
+      console.log("linescript *************** ", linescript)
       response = [];
+      const userpoint = csGetPoint[0];
+      console.log("****************userX********** = ", userpoint[0]);
+      console.log("****************userY********** = ", userpoint[1]);
       let data = {
-        count: '50',
+        count: "60",
         startX: currentPosition[1],
         startY: currentPosition[0],
         endX: destination[1],
         endY: destination[0],
-        userX: destination[1],
-        userY: destination[0],
+        userX: userpoint[0],
+        userY: userpoint[1],
         lineString: linescript,
-        searchKeyword: "EV충전소",
-        searchType : "keyword",
+//        searchKeyword: "EV충전소",
+        searchType: "category",
+        searchCategory: "C03",
+//        radius : ,
         sort: "score",
-        page: 1,
-        radius: 0,
       }
       await axios({
         method: 'post',
@@ -122,15 +127,17 @@ export default function SearchRoute({route}) {
       })
         .then(
           resp => {
-//            console.log(resp.data.searchPoiInfo.pois.poi);
-//            response.push(...resp.data.searchPoiInfo.pois.poi);
-            setCSData(resp.data.searchPoiInfo.pois.poi);
+            response.push(...resp.data.searchPoiInfo.pois.poi);
+            console.log("Number of finded EVCharger", response.length)   
           })
         .catch(error => console.log('error in POI', error))
-      setIsLoading(false);
-    }
-    
-    
+      
+        setCSData(response);
+        setIsLoading(false);
+
+      }
+
+
     useEffect( () => {
         getRoute();
     },[]);
@@ -140,7 +147,6 @@ export default function SearchRoute({route}) {
                 {isLoading? <Text>Data is Loading </Text> : 
                 <>
                 <View style={styles.wrapper}>
-                    {console.log("CSDATA ************", csData)}
                     <MapView 
                     getZoom = {10}
                     getCLat = {currentPosition[0]}

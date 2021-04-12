@@ -1,1 +1,1 @@
-export const SK_API_KEY = 'SK_API_KEY'
+export const SK_API_KEY = 'SK_API_KEY_input_here'
