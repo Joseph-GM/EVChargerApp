@@ -24,6 +24,52 @@ export default function HomeScreen({navigation}) {
   const [address, setAddress] = useState({});
   const [csData, setCSData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [markerClick, setMarkerClick] = useState(false);
+  const [csName, setCsName] = useState("");
+  const [detailPoi, setDetailPoi] = useState({});
+  const [csAddr, setCsAddr] = useState("");
+  const [totalCsNumber, setTotalCsNumber] = useState("");
+  const [availNumber, setAvailNumber] = useState("");
+
+  const URL = 'https://apis.openapi.sk.com/tmap/pois/'
+
+  const countAvailCs = (csdetail) => {
+    var count = 0;
+    var arrLength = csdetail.length;
+    for (var i = 0 ; i < arrLength ; i ++) {
+      console.log("충전기 상태 = ", csdetail[i].status)
+      if (csdetail[i].status == "2") {
+        count = count +1;
+      }
+    }
+    setAvailNumber(count.toString());
+  }
+
+  const excuteId = (marker) => {
+    console.log ("Main ***** marker click detected", marker)
+    if (marker.id != null) {
+      axios.get(URL+marker.id.toString(), {
+        params: {
+          version: 1,
+          appKey: SK_API_KEY,
+        } 
+      })
+      .then(response => {
+          setDetailPoi(response.data);
+          console.log("Suceess getting Detail *****",response.data.poiDetailInfo.name);
+          setCsAddr(response.data.poiDetailInfo.bldAddr);
+          setTotalCsNumber(response.data.poiDetailInfo.totalCnt);
+          countAvailCs(response.data.poiDetailInfo.evChargers);
+          setMarkerClick(true);
+        })
+      .catch(error => {console.log('error')})
+    } else {
+      setCsAddr("");
+      setTotalCsNumber("");
+      setAvailNumber("");
+    }
+    setCsName(marker.name.toString());
+  }
 
   const firstAddress = async(templat, templon) => {
     try {
@@ -44,7 +90,7 @@ export default function HomeScreen({navigation}) {
 
   const secondCSData = async(templat, templon) => {
     try{
-      return axios.get('https://apis.openapi.sk.com/tmap/pois', {
+      return axios.get(URL, {
       params: {
       version: 1,
       count: 20,
@@ -100,15 +146,23 @@ export default function HomeScreen({navigation}) {
                 getCLat = {cPosition[0]}
                 getCLon = {cPosition[1]}
                 markers = {csData}
+                parentCallback = {excuteId}
               />
             </View>
             <View style={styles.border}>
               <TouchableOpacity
                 onPress={this.state}
               >
-                <Text style={styles.button}>
+                {markerClick?
+                  <View>
+                    <Text style={styles.buttonText}>{csName}</Text>
+                    <Text style={styles.buttonText}>{csAddr}</Text>
+                    <Text style={styles.buttonText}>총 충전기 개수 : {totalCsNumber}</Text>
+                    <Text style={styles.buttonText}>충전가능 개수 : {availNumber}</Text>
+                  </View>
+                  : <Text style={styles.button}>
                   {address.addressInfo.fullAddress}
-                </Text>
+                </Text> }
               </TouchableOpacity>
             </View>
             <View styel={styles.buttonView}>
