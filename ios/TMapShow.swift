@@ -81,6 +81,7 @@ class TMapShow: UIView, TMapViewDelegate {
     let marker = TMapMarker(position: mPosition)
     marker.title = "현재위치"
     marker.draggable = true
+    marker.icon = UIImage(named: "image")
     let label = UILabel(frame: CGRect(x: 0, y: 0, width: 30, height: 50))
     label.text = "좌측"
     marker.leftCalloutView = label
@@ -126,6 +127,7 @@ class TMapShow: UIView, TMapViewDelegate {
           let markerPosition: CLLocationCoordinate2D? = CLLocationCoordinate2D(latitude: markerLatitude!, longitude: markerLongitude!)
           let marker = TMapMarker(position: markerPosition!)
           marker.map = self.mapView
+          marker.icon = UIImage(named: "image")
           marker.title = String(poi["name"] as! Substring)
           marker.subTitle = String(poi["id"] as! Substring)
           self.markers.append(marker)

@@ -3,6 +3,8 @@ import { View, Text,StyleSheet,} from 'react-native'
 import MapView from './MapView'
 import axios from 'axios';
 import {SK_API_KEY} from '../shared/Appkey';
+import CSShortInfo from '../shared/CSShortInfo'
+import RouteSummary from '../shared/RouteSummary'
 
 export default function RouteView({route, navigation}) {
     const currentPosition = route.params.cPosition
@@ -10,7 +12,7 @@ export default function RouteView({route, navigation}) {
     const destLatitude = parseFloat(destination[0]);
     const destLongitude = parseFloat(destination[1]);
     const URLRoute = "https://apis.openapi.sk.com/tmap/routes?version=1&format=json&callback=result";
-    const URLPoi = "https://apis.openapi.sk.com/tmap/pois";
+    const URLPoi = "https://apis.openapi.sk.com/tmap/pois/";
 
     const [csData, setCSData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -18,6 +20,51 @@ export default function RouteView({route, navigation}) {
     const [totalDistanceKm, setTotalDistanceKm] = useState("");
     const [totalTime, setTotalTime] = useState("");
     const [fare, setFare] = useState("");
+
+    const [markerClick, setMarkerClick] = useState(false);
+    const [csName, setCsName] = useState("");
+    const [detailPoi, setDetailPoi] = useState({});
+    const [csAddr, setCsAddr] = useState("");
+    const [totalCsNumber, setTotalCsNumber] = useState("");
+    const [availNumber, setAvailNumber] = useState("");
+
+
+    const countAvailCs = (csdetail) => {
+      var count = 0;
+      var arrLength = csdetail.length;
+      for (var i = 0 ; i < arrLength ; i ++) {
+        console.log("충전기 상태 = ", csdetail[i].status)
+        if (csdetail[i].status == "2") {
+          count = count +1;
+        }
+      }
+      setAvailNumber(count.toString());
+    }
+  
+    const excuteId = (marker) => {
+      console.log ("Main ***** marker click detected")
+      if (marker.id != null) {
+        axios.get(URLPoi+marker.id.toString(), {
+          params: {
+            version: 1,
+            appKey: SK_API_KEY,
+          } 
+        })
+        .then(response => {
+            setDetailPoi(response.data);
+            console.log("Suceess getting Detail *****",response.data.poiDetailInfo.name);
+            setCsAddr(response.data.poiDetailInfo.bldAddr);
+            setTotalCsNumber(response.data.poiDetailInfo.totalCnt);
+            countAvailCs(response.data.poiDetailInfo.evChargers);
+            setMarkerClick(true);
+          })
+        .catch(error => {console.log('error in getting detail cs info')})
+      } else {
+        setMarkerClick(false);
+      }
+      setCsName(marker.name.toString());
+    } 
+
 
     const getRoute = () => {
         var csTempData = [];  
@@ -109,18 +156,27 @@ export default function RouteView({route, navigation}) {
                     getDLon = {parseFloat(destination[1])}
                     markers = {csData}
                     pathdata = {routeData}
+                    parentCallback = {excuteId}
                 />
                 </View>
                 <View style={styles.border}>
-                  <Text style={styles.button}>
-                    총거리 : {totalDistanceKm} km
-                  </Text>
-                  <Text style={styles.button}>
-                    총시간 : {totalTime} 분
-                  </Text>
-                  <Text style={styles.button}>
-                    요금 : {fare} 원
-                  </Text>
+                  {markerClick? 
+                    <View>
+                      <CSShortInfo 
+                        csName = {csName}
+                        csAddr = {csAddr}
+                        totalCsNumber = {totalCsNumber}
+                        availNumber = {availNumber}
+                      />
+                    </View> :
+                    <View>
+                      <RouteSummary
+                        totalDistancekm = {totalDistanceKm}
+                        totalTime = {totalTime}
+                        fare = {fare}
+                      />
+                  </View>
+                  }
                 </View>
                 </>
             }

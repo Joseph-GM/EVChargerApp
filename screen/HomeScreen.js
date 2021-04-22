@@ -13,6 +13,7 @@ import axios from 'axios';
 import Geolocation from '@react-native-community/geolocation';
 import MapView from './MapView';
 import {SK_API_KEY} from '../shared/Appkey';
+import CSShortInfo from '../shared/CSShortInfo';
 
 //const SK_API_KEY = 'SK_API_KEY'
     
@@ -31,7 +32,7 @@ export default function HomeScreen({navigation}) {
   const [totalCsNumber, setTotalCsNumber] = useState("");
   const [availNumber, setAvailNumber] = useState("");
 
-  const URL = 'https://apis.openapi.sk.com/tmap/pois/'
+  const URLPoi = 'https://apis.openapi.sk.com/tmap/pois/'
 
   const countAvailCs = (csdetail) => {
     var count = 0;
@@ -48,7 +49,7 @@ export default function HomeScreen({navigation}) {
   const excuteId = (marker) => {
     console.log ("Main ***** marker click detected", marker)
     if (marker.id != null) {
-      axios.get(URL+marker.id.toString(), {
+      axios.get(URLPoi+marker.id.toString(), {
         params: {
           version: 1,
           appKey: SK_API_KEY,
@@ -64,12 +65,10 @@ export default function HomeScreen({navigation}) {
         })
       .catch(error => {console.log('error')})
     } else {
-      setCsAddr("");
-      setTotalCsNumber("");
-      setAvailNumber("");
+      setMarkerClick(false)
     }
     setCsName(marker.name.toString());
-  }
+  } 
 
   const firstAddress = async(templat, templon) => {
     try {
@@ -90,7 +89,7 @@ export default function HomeScreen({navigation}) {
 
   const secondCSData = async(templat, templon) => {
     try{
-      return axios.get(URL, {
+      return axios.get(URLPoi, {
       params: {
       version: 1,
       count: 20,
@@ -155,10 +154,12 @@ export default function HomeScreen({navigation}) {
               >
                 {markerClick?
                   <View>
-                    <Text style={styles.buttonText}>{csName}</Text>
-                    <Text style={styles.buttonText}>{csAddr}</Text>
-                    <Text style={styles.buttonText}>총 충전기 개수 : {totalCsNumber}</Text>
-                    <Text style={styles.buttonText}>충전가능 개수 : {availNumber}</Text>
+                    <CSShortInfo 
+                      csName = {csName}
+                      csAddr = {csAddr}
+                      totalCsNumber = {totalCsNumber}
+                      availNumber = {availNumber}
+                    />
                   </View>
                   : <Text style={styles.button}>
                   {address.addressInfo.fullAddress}
