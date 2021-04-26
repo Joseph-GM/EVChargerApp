@@ -81,7 +81,7 @@ class TMapShow: UIView, TMapViewDelegate {
     let marker = TMapMarker(position: mPosition)
     marker.title = "현재위치"
     marker.draggable = true
-    marker.icon = UIImage(named: "image")
+    marker.icon = UIImage(named: "current")
     let label = UILabel(frame: CGRect(x: 0, y: 0, width: 30, height: 50))
     label.text = "좌측"
     marker.leftCalloutView = label

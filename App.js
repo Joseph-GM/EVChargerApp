@@ -23,6 +23,7 @@
 import { NavigationContainer, NavigationHelpersContext } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { WebView } from 'react-native-webview';
 
 import HomeScreen from './screen/HomeScreen';
 import ListScreen from './screen/ListScreen';
@@ -63,6 +64,15 @@ function SearchStackScreen() {
   );
 }
 
+function ChevyHomeScreen() {
+  return(
+    <WebView 
+      source = {{uri: 'https://m.chevrolet.co.kr'}}
+      style = {{marginTop:20}}
+    />
+  );
+}
+
  export default function App() {
       
     return (
@@ -70,6 +80,7 @@ function SearchStackScreen() {
           <Tab.Navigator initialRouteName="Home">
             <Tab.Screen name="Search" component={SearchStackScreen} />
             <Tab.Screen name="Home" component={HomeStackScreen} />
+            <Tab.Screen name="ChevyHome" component={ChevyHomeScreen} />
           </Tab.Navigator>
         </NavigationContainer>    
       );
