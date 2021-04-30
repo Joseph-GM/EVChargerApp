@@ -149,10 +149,11 @@ export default function HomeScreen({navigation}) {
               />
             </View>
             <View style={styles.border}>
-              <TouchableOpacity
-                onPress={this.state}
-              >
-                {markerClick?
+              {
+                markerClick?
+                <TouchableOpacity
+                onPress={() => navigation.navigate('ModalDetail', detailPoi)}
+                >
                   <View>
                     <CSShortInfo 
                       csName = {csName}
@@ -161,10 +162,13 @@ export default function HomeScreen({navigation}) {
                       availNumber = {availNumber}
                     />
                   </View>
-                  : <Text style={styles.button}>
+                </TouchableOpacity> :
+                <View>
+                  <Text style={styles.button}>
                   {address.addressInfo.fullAddress}
-                </Text> }
-              </TouchableOpacity>
+                  </Text>
+                </View>
+              }
             </View>
             <View styel={styles.buttonView}>
               <Button 
