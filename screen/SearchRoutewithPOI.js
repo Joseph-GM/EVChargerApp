@@ -12,7 +12,7 @@ export default function SearchRoute({route}) {
     const destLatitude = parseFloat(destination[0]);
     const destLongitude = parseFloat(destination[1]);
     const URLRoute = "https://apis.openapi.sk.com/tmap/routes?version=1&format=json&callback=result";
-    const URLPoi = "https://apis.openapi.sk.com/tmap/pois";
+    const URLPoi = "https://apis.openapi.sk.com/tmap/pois/";
 
     const [csData, setCSData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);

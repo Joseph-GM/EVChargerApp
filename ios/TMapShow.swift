@@ -41,6 +41,7 @@ class TMapShow: UIView, TMapViewDelegate {
   @objc var dlatitude : NSNumber?
   @objc var dlongitude : NSNumber?
   @objc var routesdata: NSArray?
+  @objc var onUpdate: RCTDirectEventBlock?
   
   var mPosition: CLLocationCoordinate2D {
     get {
@@ -67,13 +68,20 @@ class TMapShow: UIView, TMapViewDelegate {
         
 //          setupView()
     }
-    
+  public func mapView(_ mapView: TMapView, tapOnMarker marker: TMapMarker) {
+    print("******** marker touched **************")
+    print(marker.title)
+    print(marker.subTitle)
+    if onUpdate != nil {
+      onUpdate! (["id": marker.subTitle, "name": marker.title])
+    }
+  }
   public func mapViewDidFinishLoadingMap() {
     
     let marker = TMapMarker(position: mPosition)
     marker.title = "현재위치"
-    marker.subTitle = "내차위치"
     marker.draggable = true
+    marker.icon = UIImage(named: "current")
     let label = UILabel(frame: CGRect(x: 0, y: 0, width: 30, height: 50))
     label.text = "좌측"
     marker.leftCalloutView = label
@@ -108,6 +116,7 @@ class TMapShow: UIView, TMapViewDelegate {
           let marker = TMapMarker(position: markerPosition!)
           marker.map = self.mapView
           marker.title = String(poi["name"] as! Substring)
+          marker.subTitle = String(poi["id"] as! Substring)
           self.markers.append(marker)
           self.mapView?.fitMapBoundsWithMarkers(self.markers)
         }
@@ -118,7 +127,9 @@ class TMapShow: UIView, TMapViewDelegate {
           let markerPosition: CLLocationCoordinate2D? = CLLocationCoordinate2D(latitude: markerLatitude!, longitude: markerLongitude!)
           let marker = TMapMarker(position: markerPosition!)
           marker.map = self.mapView
+          marker.icon = UIImage(named: "image")
           marker.title = String(poi["name"] as! Substring)
+          marker.subTitle = String(poi["id"] as! Substring)
           self.markers.append(marker)
           self.mapView?.fitMapBoundsWithMarkers(self.markers)
         }

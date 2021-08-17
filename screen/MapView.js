@@ -1,10 +1,17 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import { View, Text, requireNativeComponent, StyleSheet} from 'react-native'
 
 const TMapShow = requireNativeComponent("TMapShow")
 
-export default function MapView({getZoom, getCLat, getCLon, getDLat, getDLon, markers, pathdata}) {
-
+export default function MapView({getZoom, getCLat, getCLon, getDLat, getDLon, markers, pathdata, parentCallback}) {
+    
+    update = e => {
+        console.log("Marker Clicked detected in Mapview");
+        if (e.nativeEvent.name) {
+            console.log(e.nativeEvent);
+            parentCallback(e.nativeEvent);
+        }        
+    }
     return (
             <TMapShow
                 style={styles.mapview}
@@ -15,6 +22,7 @@ export default function MapView({getZoom, getCLat, getCLon, getDLat, getDLon, ma
                 dlongitude = {getDLon}
                 markerdata = {markers}
                 routesdata = {pathdata}
+                onUpdate={this.update}
             />
     )
 }
